@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>МЕГА БОНУСКА</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #ffd700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .slot-container {
+      width: 320px;
+      height: 60px;
+      overflow: hidden;
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .slots {
+      display: flex;
+      transition: transform 3s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .slot {
+      width: 320px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .attempts {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+      background: #ffd700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <h1>МЕГА БОНУСКА</h1>
+
+  <div class="slot-container">
+    <div id="slots" class="slots">
+      <!-- 10 слотов, последний = выигрыш -->
+      <div class="slot">10 DOGE</div>
+      <div class="slot">1 LTC</div>
+      <div class="slot">100 DOGE</div>
+      <div class="slot">2 DOGE</div>
+      <div class="slot">5 LTC</div>
+      <div class="slot">50 DOGE</div>
+      <div class="slot">1 DOGE</div>
+      <div class="slot">500 DOGE</div>
+      <div class="slot">0.1 LTC</div>
+      <div class="slot">БОНУС X2</div>
+    </div>
+  </div>
+
+  <div class="attempts" id="attempts">ПОПЫТОК: 1</div>
+  <button onclick="spin()" id="spinBtn">КРУТИТЬ</button>
+
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    let hasSpun = false;
+
+    function spin() {
+      if (hasSpun) return;
+      hasSpun = true;
+      document.getElementById("spinBtn").disabled = true;
+
+      const slots = document.getElementById("slots");
+      const slotWidth = 320;
+      const totalSlots = 10;
+
+      // Прокрутка на все 10 слотов
+      slots.style.transform = translateX(-${slotWidth * (totalSlots - 1)}px);
+
+      setTimeout(() => {
+        // Показ фейерверков
+        startFireworks();
+        setTimeout(stopFireworks, 4000);
+      }, 3100);
+    }
+
+    // Простой эффект фейерверков на canvas
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function startFireworks() {
+      document.getElementById('fireworks').style.display = 'block';
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: Math.random() * 6 - 3,
+          vy: Math.random() * 6 - 3,
+          alpha: 1
+        });
+      }
+      requestAnimationFrame(draw);
+    }
+
+    function stopFireworks() {
+      particles = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('fireworks').style.display = 'none';
+    }
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.fillStyle = rgba(255, 215, 0, ${p.alpha});
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.02;
+      });
+      particles = particles.filter(p => p.alpha > 0);
+      if (particles.length > 0) requestAnimationFrame(draw);
+    }
+  </script>
+</body>
+</html>
